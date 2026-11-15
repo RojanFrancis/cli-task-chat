@@ -4,6 +4,8 @@ A chat app that turns a plain-English request into a **real command-line run**. 
 
 Built for **BuildSprint 2026, Round 2: CLI-Driven AI Chat Execution for Complex Tasks**.
 
+**Live demo:** https://cli-task-chat.onrender.com (free Render instance: the first request after it has been idle takes about a minute to wake up).
+
 > "Crawl https://quotes.toscrape.com, extract the important information, give me a summary, and return the extracted data in JSON format."
 
 The chat shows the plan it understood, the exact command it ran, every log line the CLI printed, the exit code, process id and duration, then the summary and the JSON.
