@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CLI Task Chat</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <span class="logo" aria-hidden="true">&gt;_</span>
+      <div>
+        <h1>CLI Task Chat</h1>
+        <p class="sub">Ask in plain English. The server runs a real command-line crawler and reports what actually happened.</p>
+      </div>
+    </div>
+    <div class="health" id="health" title="Server status">checking…</div>
+  </header>
+
+  <main class="chat" id="chat" aria-live="polite">
+    <div class="msg bot intro">
+      <div class="bubble">
+        <p>Hi! Give me a website and tell me what you want. I'll run the <code>sitecrawl</code> CLI on the server, stream its log here, and give you a summary plus structured JSON.</p>
+        <div class="chips" id="chips">
+          <button class="chip">Crawl https://quotes.toscrape.com, extract the important information, give me a summary, and return the extracted data in JSON format.</button>
+          <button class="chip">Summarise https://books.toscrape.com in 3 pages</button>
+          <button class="chip">Get the contact details from https://example.com, only this page</button>
+          <button class="chip">Crawl http://localhost:8080/admin</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <form class="composer" id="composer" autocomplete="off">
+    <textarea id="input" rows="1" maxlength="2000" placeholder="Ask me to crawl a website…" aria-label="Message"></textarea>
+    <button type="submit" id="send">Run</button>
+  </form>
+
+  <template id="task-template">
+    <div class="msg bot">
+      <div class="bubble task">
+        <div class="plan">
+          <div class="label">Plan <span class="by"></span></div>
+          <ul class="plan-fields"></ul>
+          <div class="cmd"><span class="prompt">$</span> <code class="cmd-text"></code></div>
+        </div>
+        <div class="run">
+          <div class="label">
+            Execution log <span class="state running">running</span>
+            <span class="timer">0.0s</span>
+            <button type="button" class="cancel">Cancel</button>
+          </div>
+          <pre class="log"></pre>
+        </div>
+        <div class="outcome" hidden>
+          <div class="headline"></div>
+          <div class="exec-meta"></div>
+          <div class="summary" hidden>
+            <div class="label">Summary <span class="source"></span></div>
+            <p class="summary-text"></p>
+            <ul class="points"></ul>
+          </div>
+          <div class="json" hidden>
+            <div class="label">JSON result
+              <button type="button" class="copy">Copy</button>
+              <button type="button" class="download">Download</button>
+              <button type="button" class="raw-toggle">Show raw CLI report</button>
+            </div>
+            <pre class="json-text"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>
