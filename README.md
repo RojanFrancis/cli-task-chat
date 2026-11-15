@@ -41,7 +41,7 @@ The chat shows the plan it understood, the exact command it ran, every log line 
 
 ### Why a CLI, and why this one
 
-`sitecrawl` is a small, purpose-built crawler packaged as its own executable jar. Running it as a separate process (not a library call) gives the isolation the brief asks for: the server only ever starts that one binary with a fixed set of flags, the child has its own memory limit (`-Xmx256m`), and it can be killed without affecting the server. It also works on its own from a terminal:
+`sitecrawl` is a small, purpose-built crawler packaged as its own executable jar. Running it as a separate process (not a library call) gives the isolation the brief asks for: the server only ever starts that one binary with a fixed set of flags, the child has its own memory limit (`-Xmx128m`), and it can be killed without affecting the server. It also works on its own from a terminal:
 
 ```bash
 java -jar crawler-cli/target/sitecrawl.jar --url https://quotes.toscrape.com --max-pages 3
@@ -71,7 +71,7 @@ stdout is always exactly one JSON document, even on errors. stderr carries human
 1. The message is interpreted into a `TaskIntent` with fixed fields: `action`, `url`, `maxPages`, `maxDepth`, `wantSummary`, `wantJson`, `focus`.
 2. `IntentService.sanitize` is the gate: the URL must be a clean http(s) URL with no spaces, quotes or credentials; pages are capped at 10 and depth at 2 on the server; focus text is stripped to letters, numbers and simple punctuation.
 3. `CrawlerCommand` builds the argument list from those fields only, for example
-   `["java", "-Xmx256m", "-jar", "/app/sitecrawl.jar", "--url", "https://quotes.toscrape.com", "--max-pages", "5", …]`.
+   `["java", "-Xmx128m", …, "-jar", "/app/sitecrawl.jar", "--url", "https://quotes.toscrape.com", "--max-pages", "5", …]`.
    The user's text never becomes a command, and each value is one `argv` entry passed straight to the OS, so `;`, `&&` or `$(…)` mean nothing.
 4. `CliRunner` starts the process, streams each stderr line to the browser as a server-sent event, collects stdout (max 4 MB), and waits up to 75 seconds. On timeout it sends SIGTERM, then SIGKILL.
 5. `ResultProcessor` parses stdout, checks the report's `status` against the exit code, and only then builds the answer. The status shown in the chat always comes from the CLI, never from the LLM.
@@ -110,7 +110,7 @@ docker run -p 8080:8080 cli-task-chat
 | `GEMINI_MODEL` | `gemini-3.6-flash` | Gemini model name |
 | `CRAWLER_JAR` | `../crawler-cli/target/sitecrawl.jar` | Path to the CLI jar |
 | `CRAWLER_PROCESS_TIMEOUT` | `75` | Seconds before the CLI process is killed |
-| `CRAWLER_MAX_CONCURRENT` | `2` | CLI runs allowed at once |
+| `CRAWLER_MAX_CONCURRENT` | `2` (`1` in the Docker image) | CLI runs allowed at once |
 | `PORT` | `8080` | HTTP port |
 
 ## Try the demo

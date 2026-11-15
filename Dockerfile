@@ -14,6 +14,8 @@ RUN useradd --system --uid 10001 app
 COPY --from=build /src/crawler-cli/target/sitecrawl.jar /app/sitecrawl.jar
 COPY --from=build /src/chat-server/target/chat-server.jar /app/chat-server.jar
 USER app
-ENV CRAWLER_JAR=/app/sitecrawl.jar
+# Sized for a 512 MB container: the server and one crawler JVM at a time.
+ENV CRAWLER_JAR=/app/sitecrawl.jar \
+    CRAWLER_MAX_CONCURRENT=1
 EXPOSE 8080
-ENTRYPOINT ["java", "-Xmx384m", "-jar", "/app/chat-server.jar"]
+ENTRYPOINT ["java", "-Xmx200m", "-XX:+UseSerialGC", "-XX:TieredStopAtLevel=1", "-Xss512k", "-jar", "/app/chat-server.jar"]

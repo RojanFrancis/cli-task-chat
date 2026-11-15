@@ -40,7 +40,7 @@ public class CrawlerCommand {
             throw new IllegalArgumentException("Intent does not run the CLI: " + intent.action());
         }
         return List.of(
-                javaBinary, "-Xmx256m", "-jar", jar.toString(),
+                javaBinary, "-Xmx128m", "-XX:+UseSerialGC", "-XX:TieredStopAtLevel=1", "-jar", jar.toString(),
                 "--url", intent.url(),
                 "--max-pages", Integer.toString(intent.maxPages()),
                 "--max-depth", Integer.toString(intent.maxDepth()),
